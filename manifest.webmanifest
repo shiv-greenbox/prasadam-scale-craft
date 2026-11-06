@@ -1,0 +1,15 @@
+{
+  "name": "Prasadam Scale & Craft",
+  "short_name": "Prasadam",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf9f5",
+  "theme_color": "#c55a36",
+  "icons": [
+    {
+      "src": "https://images.googleusercontent.com/images?q=tbn:ANd9GcQ...",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
