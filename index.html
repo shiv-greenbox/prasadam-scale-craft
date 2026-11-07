@@ -41,6 +41,13 @@
         .book-shadow {
             box-shadow: 0 20px 40px -15px rgba(110, 85, 60, 0.15), 0 1px 3px rgba(0,0,0,0.05);
         }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
@@ -87,8 +94,8 @@
                 </div>
 
                 <div class="text-xs text-stone-500 pt-3 border-t border-parchment-border">
-                    <p class="font-semibold text-stone-700">Prasadam Engine v1.0</p>
-                    <p class="text-[11px] text-stone-500">Multi-version ratio scaling & structured buckets.</p>
+                    <p class="font-semibold text-stone-700">Prasadam Engine v1.1</p>
+                    <p class="text-[11px] text-stone-500">Live import status & bucket distribution.</p>
                 </div>
             </div>
 
@@ -178,15 +185,30 @@
                 <!-- Tab 4: Import Content / URL Studio -->
                 <div id="tab-content-import" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="max-w-2xl mx-auto bg-parchment-dark/70 rounded-2xl p-6 border border-parchment-border">
-                        <h3 class="font-serif font-bold text-base text-stone-900 mb-1">Intelligent Import Studio</h3>
+                        <h3 class="font-serif font-bold base text-stone-900 mb-1">Intelligent Import Studio</h3>
                         <p class="text-xs text-stone-600 mb-4">Paste raw text, PDF content, or YouTube video link references below. Our parser will automatically structure them into your 3 buckets for this recipe version!</p>
                         
                         <textarea id="import-text-input" rows="4" placeholder="Paste recipe text, raw PDF content, or YouTube URL here..." class="w-full text-xs p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-terracotta-500 focus:outline-none bg-white mb-3 leading-relaxed"></textarea>
                         
-                        <button onclick="parseContentToBuckets()" class="w-full py-3 bg-terracotta-500 text-white rounded-xl text-xs font-semibold hover:bg-terracotta-600 transition shadow-sm flex items-center justify-center space-x-2">
+                        <button id="import-btn" onclick="parseContentToBuckets()" class="w-full py-3 bg-terracotta-500 text-white rounded-xl text-xs font-semibold hover:bg-terracotta-600 transition shadow-sm flex items-center justify-center space-x-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             <span>Process & Distribute into Buckets</span>
                         </button>
+
+                        <!-- Progress Bar & Status Message Area -->
+                        <div id="import-status-container" class="mt-4 hidden">
+                            <div class="flex items-center justify-between text-xs font-semibold mb-1">
+                                <span id="import-status-text" class="text-stone-700">Initializing import...</span>
+                                <span id="import-percentage" class="text-terracotta-600">0%</span>
+                            </div>
+                            <!-- Progress Bar Track -->
+                            <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+                                <div id="import-progress-bar" class="bg-terracotta-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Banner Message Alert -->
+                        <div id="import-alert-banner" class="mt-4 p-3 rounded-xl text-xs font-semibold hidden"></div>
                     </div>
                 </div>
 
@@ -194,7 +216,7 @@
         </div>
     </main>
 
-    <!-- Script Logic with Versioning Engine -->
+    <!-- Script Logic with Live Progress Bar & Status Engine -->
     <script>
         let recipes = [
             {
@@ -241,7 +263,6 @@
             return r.versions.find(v => v.id === r.activeVersionId) || r.versions[0];
         }
 
-        // Render Vault List
         function renderRecipeVault() {
             const listEl = document.getElementById('recipe-list');
             listEl.innerHTML = '';
@@ -276,7 +297,6 @@
             document.getElementById('active-recipe-source').innerText = r.source || 'Vault Record';
             document.getElementById('active-recipe-desc').innerText = r.description;
 
-            // Render Version Dropdown
             const selector = document.getElementById('version-selector');
             selector.innerHTML = '';
             r.versions.forEach(ver => {
@@ -292,14 +312,11 @@
             renderSteps();
         }
 
-        // Switch Version
         function switchVersion(versionId) {
-            const r = getActiveRecipe();
-            r.activeVersionId = versionId;
+            getActiveRecipe().activeVersionId = versionId;
             renderActiveRecipe();
         }
 
-        // Save Custom Version
         function saveCustomVersion() {
             const r = getActiveRecipe();
             const currentV = getActiveVersion();
@@ -309,7 +326,6 @@
             const customName = prompt('Enter a name for this custom version:', defaultName);
             if (!customName) return;
 
-            // Deep clone current version data into a new version
             const newVersion = {
                 id: 'v-' + Date.now(),
                 name: customName,
@@ -325,7 +341,6 @@
             alert(`Version "${customName}" saved successfully!`);
         }
 
-        // Tab 1: Ingredients Table & Scaling Engine
         function renderIngredientsTable() {
             const v = getActiveVersion();
             const tbody = document.getElementById('ingredients-table-body');
@@ -367,15 +382,12 @@
             const v = getActiveVersion();
             const val = parseFloat(newVal);
             if (isNaN(val) || val <= 0) return;
-
             const oldVal = v.ingredients[changedIndex].baseWeight;
             const scalingFactor = val / oldVal;
-
             v.ingredients.forEach((ing, idx) => {
                 if (idx === changedIndex) ing.baseWeight = val;
                 else ing.baseWeight = parseFloat((ing.baseWeight * scalingFactor).toFixed(3));
             });
-
             renderIngredientsTable();
         }
 
@@ -392,7 +404,6 @@
             renderIngredientsTable();
         }
 
-        // Tab 2: Pre-Prep
         function renderPrePrep() {
             const v = getActiveVersion();
             const container = document.getElementById('preprep-container');
@@ -407,109 +418,17 @@
                 container.appendChild(div);
             });
         }
-
         function addPrePrepItem() {
-            const mode = prompt('Pre-Prep Mode (e.g., Soaking, Roasting):', 'Soaking');
+            const mode = prompt('Pre-Prep Mode:', 'Soaking');
             const desc = prompt('Description:', 'Soak in warm water.');
-            if (mode && desc) {
-                getActiveVersion().preprep.push({ mode, desc });
-                renderPrePrep();
-            }
+            if (mode && desc) { getActiveVersion().preprep.push({ mode, desc }); renderPrePrep(); }
         }
         function removePrePrep(index) { getActiveVersion().preprep.splice(index, 1); renderPrePrep(); }
 
-        // Tab 3: Steps
         function renderSteps() {
             const v = getActiveVersion();
             const container = document.getElementById('steps-container');
             container.innerHTML = '';
             v.steps.forEach((s, index) => {
                 const div = document.createElement('div');
-                div.className = 'p-3 bg-white rounded-xl border border-stone-200 flex items-start justify-between gap-3 text-xs';
-                div.innerHTML = `
-                    <div class="flex items-start space-x-2">
-                        <span class="w-5 h-5 rounded-full bg-terracotta-100 text-terracotta-700 font-bold flex items-center justify-center shrink-0">${s.step}</span>
-                        <p class="text-stone-700 leading-relaxed">${s.text}</p>
-                    </div>
-                    <button onclick="removeStep(${index})" class="text-stone-400 hover:text-red-500">✕</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function addStepItem() {
-            const text = prompt('Enter step instruction:');
-            if (text) {
-                const v = getActiveVersion();
-                v.steps.push({ step: v.steps.length + 1, text });
-                renderSteps();
-            }
-        }
-        function removeStep(index) {
-            const v = getActiveVersion();
-            v.steps.splice(index, 1);
-            v.steps.forEach((s, i) => s.step = i + 1);
-            renderSteps();
-        }
-
-        // Tab 4: Import Studio Parser
-        function parseContentToBuckets() {
-            const input = document.getElementById('import-text-input').value.trim();
-            if (!input) { alert('Please paste recipe text, PDF content, or a YouTube URL first.'); return; }
-
-            const v = getActiveVersion();
-            v.ingredients.push({ name: 'Imported Spice Extracted', baseWeight: 0.5, unit: 'kg' });
-            v.preprep.push({ mode: 'Import Inspection', desc: 'Verified from imported source feed.' });
-            v.steps.push({ step: v.steps.length + 1, text: 'Process ingredients according to imported reference guidelines.' });
-
-            document.getElementById('import-text-input').value = '';
-            switchTab('scale');
-            renderActiveRecipe();
-            alert('Content successfully parsed into the 3 buckets!');
-        }
-
-        // Vault: Create New Recipe
-        function createNewRecipe() {
-            const title = prompt('Recipe Title:', 'New Recipe');
-            if (!title) return;
-            const dateStr = new Date().toISOString().split('T')[0];
-            const newR = {
-                id: 'recipe-' + Date.now(),
-                title: title,
-                category: 'Home Kitchen',
-                source: 'User Created',
-                description: 'Custom recipe created in Vault.',
-                activeVersionId: 'v-base-' + Date.now(),
-                versions: [
-                    {
-                        id: 'v-base-' + Date.now(),
-                        name: `v1_${dateStr}`,
-                        ingredients: [{ name: 'Primary Ingredient', baseWeight: 1.0, unit: 'kg' }],
-                        preprep: [{ mode: 'Preparation', desc: 'Inspect raw components.' }],
-                        steps: [{ step: 1, text: 'Begin preparation process.' }]
-                    }
-                ]
-            };
-            recipes.push(newR);
-            selectRecipe(newR.id);
-        }
-
-        // Tab Switcher
-        function switchTab(tabName) {
-            ['scale', 'preprep', 'steps', 'import'].forEach(t => {
-                document.getElementById(`tab-content-${t}`).classList.add('hidden');
-                document.getElementById(`tab-btn-${t}`).className = 'py-3 px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition';
-            });
-            document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-btn-${tabName}`).className = 'py-3 px-4 text-xs font-bold text-terracotta-600 border-b-2 border-terracotta-500 transition';
-        }
-
-        function openInstallModal() { alert('To install, open this page in Safari on iOS, tap Share, and select "Add to Home Screen".'); }
-
-        window.onload = function() {
-            renderRecipeVault();
-            renderActiveRecipe();
-        };
-    </script>
-</body>
-</html>
+                div.className = 'p-3
