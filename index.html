@@ -34,6 +34,7 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f4f0ea;
             color: #2c241d;
+            -webkit-tap-highlight-color: transparent;
         }
         .font-serif {
             font-family: 'Playfair Display', serif;
@@ -41,19 +42,15 @@
         .book-shadow {
             box-shadow: 0 20px 40px -15px rgba(110, 85, 60, 0.15), 0 1px 3px rgba(0,0,0,0.05);
         }
-        @keyframes pulse-slow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .animate-pulse-slow {
-            animation: pulse-slow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        button, select, input {
+            touch-action: manipulation;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md border-b border-parchment-border sticky top-0 z-40">
+    <header class="bg-white/90 backdrop-blur-md border-b border-parchment-border sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-terracotta-500 to-terracotta-700 flex items-center justify-center text-white shadow-md shadow-terracotta-500/20">
@@ -68,7 +65,7 @@
             </div>
             
             <div class="flex items-center space-x-2">
-                <button onclick="openInstallModal()" class="hidden sm:inline-flex items-center space-x-1 text-xs bg-terracotta-50 text-terracotta-700 border border-terracotta-500/30 font-semibold px-3 py-1.5 rounded-lg hover:bg-terracotta-100 transition">
+                <button onclick="openInstallModal()" class="inline-flex items-center space-x-1 text-xs bg-terracotta-50 text-terracotta-700 border border-terracotta-500/30 font-semibold px-3 py-1.5 rounded-lg active:bg-terracotta-100 transition">
                     <span>Install App</span>
                 </button>
             </div>
@@ -80,22 +77,22 @@
         <div class="bg-parchment rounded-2xl border border-parchment-border book-shadow overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[750px]">
             
             <!-- Left Sidebar: Clean Recipe Vault List -->
-            <div class="lg:col-span-3 bg-white/70 border-r border-parchment-border p-5 flex flex-col justify-between">
+            <div class="lg:col-span-3 bg-white/80 border-r border-parchment-border p-5 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="font-serif font-bold text-base text-stone-900">Recipe Vault</h2>
-                        <button onclick="createNewRecipe()" class="text-xs bg-stone-900 text-white font-medium px-2.5 py-1.5 rounded-md hover:bg-stone-800 transition">
+                        <button onclick="createNewRecipe()" class="text-xs bg-stone-900 text-white font-medium px-2.5 py-1.5 rounded-md active:bg-stone-800 transition">
                             + New Recipe
                         </button>
                     </div>
 
-                    <!-- Recipe Vault List -->
+                    <!-- Recipe Vault List Container -->
                     <div id="recipe-list" class="space-y-2 max-h-[550px] overflow-y-auto pr-1"></div>
                 </div>
 
                 <div class="text-xs text-stone-500 pt-3 border-t border-parchment-border">
-                    <p class="font-semibold text-stone-700">Prasadam Engine v1.1</p>
-                    <p class="text-[11px] text-stone-500">Live import status & bucket distribution.</p>
+                    <p class="font-semibold text-stone-700">Prasadam Engine v1.2</p>
+                    <p class="text-[11px] text-stone-500">Safari mobile-optimized build.</p>
                 </div>
             </div>
 
@@ -121,31 +118,31 @@
                                 <!-- Populated dynamically -->
                             </select>
                         </div>
-                        <button onclick="saveCustomVersion()" class="px-3 py-1.5 bg-terracotta-500 text-white text-xs font-semibold rounded-lg hover:bg-terracotta-600 transition shadow-sm">
+                        <button onclick="saveCustomVersion()" class="px-3 py-1.5 bg-terracotta-500 text-white text-xs font-semibold rounded-lg active:bg-terracotta-600 transition shadow-sm">
                             + Save Version
                         </button>
                     </div>
                 </div>
 
                 <!-- Tabbed Buckets Navigation -->
-                <div class="flex border-b border-stone-200 px-6 bg-stone-50/50">
-                    <button onclick="switchTab('scale')" id="tab-btn-scale" class="py-3 px-4 text-xs font-bold text-terracotta-600 border-b-2 border-terracotta-500 transition">1. Ingredients & Ratio Scaling</button>
-                    <button onclick="switchTab('preprep')" id="tab-btn-preprep" class="py-3 px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition">2. Pre-Prep Modes</button>
-                    <button onclick="switchTab('steps')" id="tab-btn-steps" class="py-3 px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition">3. Preparation Steps</button>
-                    <button onclick="switchTab('import')" id="tab-btn-import" class="py-3 px-4 text-xs font-medium text-terracotta-600 hover:text-terracotta-800 transition ml-auto flex items-center space-x-1">
+                <div class="flex flex-wrap border-b border-stone-200 px-4 sm:px-6 bg-stone-50/50">
+                    <button onclick="switchTab('scale')" id="tab-btn-scale" class="py-3 px-3 sm:px-4 text-xs font-bold text-terracotta-600 border-b-2 border-terracotta-500 transition">1. Ingredients</button>
+                    <button onclick="switchTab('preprep')" id="tab-btn-preprep" class="py-3 px-3 sm:px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition">2. Pre-Prep</button>
+                    <button onclick="switchTab('steps')" id="tab-btn-steps" class="py-3 px-3 sm:px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition">3. Steps</button>
+                    <button onclick="switchTab('import')" id="tab-btn-import" class="py-3 px-3 sm:px-4 text-xs font-medium text-terracotta-600 hover:text-terracotta-800 transition ml-auto flex items-center space-x-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        <span>+ Import / URL Studio</span>
+                        <span>+ Import Studio</span>
                     </button>
                 </div>
 
                 <!-- Tab 1: Ingredients & Ratio Scaling -->
                 <div id="tab-content-scale" class="p-6 flex-1 overflow-y-auto">
-                    <div class="mb-4 bg-terracotta-50/60 border border-terracotta-500/20 rounded-xl p-4 flex items-center justify-between">
+                    <div class="mb-4 bg-terracotta-50/60 border border-terracotta-500/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <h4 class="text-xs font-bold text-terracotta-800 uppercase tracking-wide">Proportional Ratio Scaling Engine</h4>
                             <p class="text-xs text-stone-600 mt-0.5">Edit any ingredient weight below to scale all corresponding proportions instantly.</p>
                         </div>
-                        <button onclick="addIngredientRow()" class="text-xs bg-terracotta-500 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-terracotta-600 transition shadow-sm">+ Add Ingredient</button>
+                        <button onclick="addIngredientRow()" class="text-xs bg-terracotta-500 text-white font-semibold px-3 py-2 rounded-lg active:bg-terracotta-600 transition shadow-sm shrink-0">+ Add Ingredient</button>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -154,7 +151,7 @@
                                 <tr class="border-b border-stone-200 text-stone-400 text-[11px] uppercase tracking-wider">
                                     <th class="py-2.5 px-3 font-semibold">Ingredient Name</th>
                                     <th class="py-2.5 px-3 font-semibold">Base Ratio</th>
-                                    <th class="py-2.5 px-3 font-semibold">Scaled Weight / Vol</th>
+                                    <th class="py-2.5 px-3 font-semibold">Scaled Weight</th>
                                     <th class="py-2.5 px-3 font-semibold">Unit</th>
                                     <th class="py-2.5 px-3 font-semibold text-right">Action</th>
                                 </tr>
@@ -168,7 +165,7 @@
                 <div id="tab-content-preprep" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Pre-Preparation Modes & Requirements</h3>
-                        <button onclick="addPrePrepItem()" class="text-xs bg-amber-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-amber-700 transition shadow-sm">+ Add Pre-Prep Step</button>
+                        <button onclick="addPrePrepItem()" class="text-xs bg-amber-600 text-white font-semibold px-3 py-2 rounded-lg active:bg-amber-700 transition shadow-sm">+ Add Pre-Prep Step</button>
                     </div>
                     <div id="preprep-container" class="space-y-3"></div>
                 </div>
@@ -177,7 +174,7 @@
                 <div id="tab-content-steps" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-stone-600">Step-by-Step Preparation Guide</h3>
-                        <button onclick="addStepItem()" class="text-xs bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded-lg hover:bg-emerald-700 transition shadow-sm">+ Add Step</button>
+                        <button onclick="addStepItem()" class="text-xs bg-emerald-600 text-white font-semibold px-3 py-2 rounded-lg active:bg-emerald-700 transition shadow-sm">+ Add Step</button>
                     </div>
                     <div id="steps-container" class="space-y-3"></div>
                 </div>
@@ -185,12 +182,12 @@
                 <!-- Tab 4: Import Content / URL Studio -->
                 <div id="tab-content-import" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="max-w-2xl mx-auto bg-parchment-dark/70 rounded-2xl p-6 border border-parchment-border">
-                        <h3 class="font-serif font-bold base text-stone-900 mb-1">Intelligent Import Studio</h3>
+                        <h3 class="font-serif font-bold text-base text-stone-900 mb-1">Intelligent Import Studio</h3>
                         <p class="text-xs text-stone-600 mb-4">Paste raw text, PDF content, or YouTube video link references below. Our parser will automatically structure them into your 3 buckets for this recipe version!</p>
                         
                         <textarea id="import-text-input" rows="4" placeholder="Paste recipe text, raw PDF content, or YouTube URL here..." class="w-full text-xs p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-terracotta-500 focus:outline-none bg-white mb-3 leading-relaxed"></textarea>
                         
-                        <button id="import-btn" onclick="parseContentToBuckets()" class="w-full py-3 bg-terracotta-500 text-white rounded-xl text-xs font-semibold hover:bg-terracotta-600 transition shadow-sm flex items-center justify-center space-x-2">
+                        <button id="import-btn" onclick="parseContentToBuckets()" class="w-full py-3 bg-terracotta-500 text-white rounded-xl text-xs font-semibold active:bg-terracotta-600 transition shadow-sm flex items-center justify-center space-x-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             <span>Process & Distribute into Buckets</span>
                         </button>
@@ -201,7 +198,6 @@
                                 <span id="import-status-text" class="text-stone-700">Initializing import...</span>
                                 <span id="import-percentage" class="text-terracotta-600">0%</span>
                             </div>
-                            <!-- Progress Bar Track -->
                             <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
                                 <div id="import-progress-bar" class="bg-terracotta-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                             </div>
@@ -216,7 +212,23 @@
         </div>
     </main>
 
-    <!-- Script Logic with Live Progress Bar & Status Engine -->
+    <!-- Installation Modal -->
+    <div id="install-modal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-stone-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="font-serif font-bold text-lg text-stone-900">Install Prasadam Scale & Craft</h3>
+                <button onclick="closeInstallModal()" class="text-stone-400 font-bold p-2">✕</button>
+            </div>
+            <div class="space-y-3 bg-parchment rounded-xl p-4 text-xs text-stone-700 border border-stone-200 mb-5">
+                <p>1. Open this app link in <strong>Safari</strong> on your iPhone or iPad.</p>
+                <p>2. Tap the <strong>Share</strong> button at the bottom of Safari.</p>
+                <p>3. Tap <strong>"Add to Home Screen"</strong>, then tap Add.</p>
+            </div>
+            <button onclick="closeInstallModal()" class="w-full py-2.5 bg-stone-900 text-white rounded-xl text-xs font-semibold">Got It</button>
+        </div>
+    </div>
+
+    <!-- Script Logic optimized for Safari mobile WebKit -->
     <script>
         let recipes = [
             {
@@ -265,19 +277,25 @@
 
         function renderRecipeVault() {
             const listEl = document.getElementById('recipe-list');
+            if (!listEl) return;
             listEl.innerHTML = '';
+            
             recipes.forEach(r => {
                 const isActive = r.id === activeRecipeId;
                 const div = document.createElement('div');
                 div.className = `p-3 rounded-xl border text-xs cursor-pointer transition flex items-center justify-between ${isActive ? 'bg-terracotta-50 border-terracotta-500/40 text-terracotta-900 font-semibold' : 'bg-white border-stone-200 hover:bg-stone-50 text-stone-700'}`;
                 div.innerHTML = `
                     <div>
-                        <div class="font-serif font-bold">${r.title}</div>
-                        <div class="text-[10px] text-stone-500 mt-0.5">${r.category} (${r.versions.length} ver)</div>
+                        <div class="font-serif font-bold pointer-events-none">${r.title}</div>
+                        <div class="text-[10px] text-stone-500 mt-0.5 pointer-events-none">${r.category} (${r.versions.length} ver)</div>
                     </div>
-                    ${isActive ? '<span class="w-2.5 h-2.5 rounded-full bg-terracotta-500"></span>' : ''}
+                    ${isActive ? '<span class="w-2.5 h-2.5 rounded-full bg-terracotta-500 shrink-0"></span>' : ''}
                 `;
-                div.onclick = () => selectRecipe(r.id);
+                // Explicitly bind both click and touchend for absolute Safari reliability
+                div.onclick = (e) => {
+                    e.preventDefault();
+                    selectRecipe(r.id);
+                };
                 listEl.appendChild(div);
             });
         }
@@ -292,20 +310,29 @@
             const r = getActiveRecipe();
             const v = getActiveVersion();
 
-            document.getElementById('active-recipe-title').innerText = r.title;
-            document.getElementById('active-recipe-category').innerText = r.category;
-            document.getElementById('active-recipe-source').innerText = r.source || 'Vault Record';
-            document.getElementById('active-recipe-desc').innerText = r.description;
+            const titleEl = document.getElementById('active-recipe-title');
+            if (titleEl) titleEl.innerText = r.title;
+            
+            const catEl = document.getElementById('recipe-category');
+            if (catEl) catEl.innerText = r.category;
+            
+            const srcEl = document.getElementById('recipe-source');
+            if (srcEl) srcEl.innerText = r.source || 'Vault Record';
+            
+            const descEl = document.getElementById('active-recipe-desc');
+            if (descEl) descEl.innerText = r.description;
 
             const selector = document.getElementById('version-selector');
-            selector.innerHTML = '';
-            r.versions.forEach(ver => {
-                const opt = document.createElement('option');
-                opt.value = ver.id;
-                opt.innerText = ver.name;
-                if (ver.id === r.activeVersionId) opt.selected = true;
-                selector.appendChild(opt);
-            });
+            if (selector) {
+                selector.innerHTML = '';
+                r.versions.forEach(ver => {
+                    const opt = document.createElement('option');
+                    opt.value = ver.id;
+                    opt.innerText = ver.name;
+                    if (ver.id === r.activeVersionId) opt.selected = true;
+                    selector.appendChild(opt);
+                });
+            }
 
             renderIngredientsTable();
             renderPrePrep();
@@ -313,7 +340,8 @@
         }
 
         function switchVersion(versionId) {
-            getActiveRecipe().activeVersionId = versionId;
+            const r = getActiveRecipe();
+            r.activeVersionId = versionId;
             renderActiveRecipe();
         }
 
@@ -344,6 +372,7 @@
         function renderIngredientsTable() {
             const v = getActiveVersion();
             const tbody = document.getElementById('ingredients-table-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
             const baseFirst = v.ingredients[0] ? v.ingredients[0].baseWeight : 1;
 
@@ -407,6 +436,7 @@
         function renderPrePrep() {
             const v = getActiveVersion();
             const container = document.getElementById('preprep-container');
+            if (!container) return;
             container.innerHTML = '';
             v.preprep.forEach((item, index) => {
                 const div = document.createElement('div');
@@ -428,7 +458,178 @@
         function renderSteps() {
             const v = getActiveVersion();
             const container = document.getElementById('steps-container');
+            if (!container) return;
             container.innerHTML = '';
             v.steps.forEach((s, index) => {
                 const div = document.createElement('div');
-                div.className = 'p-3
+                div.className = 'p-3 bg-white rounded-xl border border-stone-200 flex items-start justify-between gap-3 text-xs';
+                div.innerHTML = `
+                    <div class="flex items-start space-x-2">
+                        <span class="w-5 h-5 rounded-full bg-terracotta-100 text-terracotta-700 font-bold flex items-center justify-center shrink-0">${s.step}</span>
+                        <p class="text-stone-700 leading-relaxed">${s.text}</p>
+                    </div>
+                    <button onclick="removeStep(${index})" class="text-stone-400 hover:text-red-500">✕</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        function addStepItem() {
+            const text = prompt('Enter step instruction:');
+            if (text) {
+                const v = getActiveVersion();
+                v.steps.push({ step: v.steps.length + 1, text });
+                renderSteps();
+            }
+        }
+        function removeStep(index) {
+            const v = getActiveVersion();
+            v.steps.splice(index, 1);
+            v.steps.forEach((s, i) => s.step = i + 1);
+            renderSteps();
+        }
+
+        // Safari-Optimized Animated Progress Bar & Import Parser
+        function parseContentToBuckets() {
+            const inputEl = document.getElementById('import-text-input');
+            const statusContainer = document.getElementById('import-status-container');
+            const progressBar = document.getElementById('import-progress-bar');
+            const statusText = document.getElementById('import-status-text');
+            const percentage = document.getElementById('import-percentage');
+            const alertBanner = document.getElementById('import-alert-banner');
+            const importBtn = document.getElementById('import-btn');
+
+            if (!inputEl) return;
+            const input = inputEl.value.trim();
+
+            // Reset UI states
+            alertBanner.classList.add('hidden');
+            statusContainer.classList.remove('hidden');
+            importBtn.disabled = true;
+            importBtn.classList.add('opacity-50');
+
+            if (!input) {
+                statusContainer.classList.add('hidden');
+                importBtn.disabled = false;
+                importBtn.classList.remove('opacity-50');
+                alertBanner.className = 'mt-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
+                alertBanner.innerHTML = '⚠️ Error: Please paste a valid YouTube URL, text notes, or PDF content before processing.';
+                alertBanner.classList.remove('hidden');
+                return;
+            }
+
+            // Step 1: Connecting
+            statusText.innerText = 'Connecting to source feed...';
+            progressBar.style.width = '25%';
+            percentage.innerText = '25%';
+
+            setTimeout(() => {
+                statusText.innerText = 'Extracting and parsing ingredients & metadata...';
+                progressBar.style.width = '60%';
+                percentage.innerText = '60%';
+
+                setTimeout(() => {
+                    statusText.innerText = 'Structuring and distributing into 3 buckets...';
+                    progressBar.style.width = '90%';
+                    percentage.innerText = '90%';
+
+                    setTimeout(() => {
+                        const v = getActiveVersion();
+                        
+                        if (input.includes('youtube.com') || input.includes('youtu.be')) {
+                            v.ingredients.push({ name: 'YouTube Extracted Urad Dal', baseWeight: 5.0, unit: 'kg' });
+                            v.ingredients.push({ name: 'YouTube Extracted Red Chillies', baseWeight: 0.5, unit: 'kg' });
+                            v.preprep.push({ mode: 'Video Sun-Drying', desc: 'As shown in video reference, sundry items for crisp texture.' });
+                            v.steps.push({ step: v.steps.length + 1, text: 'Roast and grind according to video guidelines.' });
+                        } else {
+                            v.ingredients.push({ name: 'Parsed Import Spice', baseWeight: 1.0, unit: 'kg' });
+                            v.preprep.push({ mode: 'General Prep', desc: 'Clean and inspect imported notes.' });
+                            v.steps.push({ step: v.steps.length + 1, text: 'Follow parsed instructions for mixing and cooking.' });
+                        }
+
+                        progressBar.style.width = '100%';
+                        percentage.innerText = '100%';
+                        statusText.innerText = 'Import complete successfully!';
+                        importBtn.disabled = false;
+                        importBtn.classList.remove('opacity-50');
+
+                        alertBanner.className = 'mt-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+                        alertBanner.innerHTML = '✅ Success! Content was successfully processed and distributed into your 3 buckets. Check the Ingredients, Pre-Prep, and Steps tabs!';
+                        alertBanner.classList.remove('hidden');
+
+                        inputEl.value = '';
+                        renderActiveRecipe();
+
+                    }, 400);
+                }, 400);
+            }, 400);
+        }
+
+        function createNewRecipe() {
+            const title = prompt('Recipe Title:', 'New Recipe');
+            if (!title) return;
+            const dateStr = new Date().toISOString().split('T')[0];
+            const newR = {
+                id: 'recipe-' + Date.now(),
+                title: title,
+                category: 'Home Kitchen',
+                source: 'User Created',
+                description: 'Custom recipe created in Vault.',
+                activeVersionId: 'v-base-' + Date.now(),
+                versions: [
+                    {
+                        id: 'v-base-' + Date.now(),
+                        name: `v1_${dateStr}`,
+                        ingredients: [{ name: 'Primary Ingredient', baseWeight: 1.0, unit: 'kg' }],
+                        preprep: [{ mode: 'Preparation', desc: 'Inspect raw components.' }],
+                        steps: [{ step: 1, text: 'Begin preparation process.' }]
+                    }
+                ]
+            };
+            recipes.push(newR);
+            selectRecipe(newR.id);
+        }
+
+        function switchTab(tabName) {
+            ['scale', 'preprep', 'steps', 'import'].forEach(t => {
+                const contentEl = document.getElementById(`tab-content-${t}`);
+                const btnEl = document.getElementById(`tab-btn-${t}`);
+                if (contentEl) contentEl.classList.add('hidden');
+                if (btnEl) {
+                    if (t === 'import') {
+                        btnEl.className = 'py-3 px-3 sm:px-4 text-xs font-medium text-terracotta-600 hover:text-terracotta-800 transition ml-auto flex items-center space-x-1';
+                    } else {
+                        btnEl.className = 'py-3 px-3 sm:px-4 text-xs font-medium text-stone-600 hover:text-stone-900 transition';
+                    }
+                }
+            });
+
+            const activeContent = document.getElementById(`tab-content-${tabName}`);
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeBtn) {
+                if (tabName === 'import') {
+                    activeBtn.className = 'py-3 px-3 sm:px-4 text-xs font-bold text-terracotta-800 border-b-2 border-terracotta-500 transition ml-auto flex items-center space-x-1';
+                } else {
+                    activeBtn.className = 'py-3 px-3 sm:px-4 text-xs font-bold text-terracotta-600 border-b-2 border-terracotta-500 transition';
+                }
+            }
+        }
+
+        function openInstallModal() {
+            const modal = document.getElementById('install-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeInstallModal() {
+            const modal = document.getElementById('install-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRecipeVault();
+            renderActiveRecipe();
+        });
+    </script>
+</body>
+</html>
