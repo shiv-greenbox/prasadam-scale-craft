@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <h1 class="font-serif font-bold text-lg text-stone-900 tracking-tight">Prasadam Scale & Craft</h1>
-                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Clipboard Image Pasting</p>
+                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Decimal Precision</p>
                 </div>
             </div>
             
@@ -91,8 +91,8 @@
                 </div>
 
                 <div class="text-xs text-stone-500 pt-3 border-t border-parchment-border">
-                    <p class="font-semibold text-stone-700">Prasadam Engine v1.5</p>
-                    <p class="text-[11px] text-stone-500">Clipboard image pasting enabled.</p>
+                    <p class="font-semibold text-stone-700">Prasadam Engine v1.6</p>
+                    <p class="text-[11px] text-stone-500">Decimal precision & "count" unit update.</p>
                 </div>
             </div>
 
@@ -139,8 +139,8 @@
                 <div id="tab-content-scale" class="p-6 flex-1 overflow-y-auto">
                     <div class="mb-4 bg-terracotta-50/60 border border-terracotta-500/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h4 class="text-xs font-bold text-terracotta-800 uppercase tracking-wide">Proportional Ratio Scaling & Pasteable Icon Thumbnails</h4>
-                            <p class="text-xs text-stone-600 mt-0.5">Click any ingredient icon thumbnail and press <kbd class="px-1.5 py-0.5 bg-white border border-stone-300 rounded text-[10px]">Cmd+V</kbd> or <kbd class="px-1.5 py-0.5 bg-white border border-stone-300 rounded text-[10px]">Ctrl+V</kbd> to paste a custom image from your clipboard!</p>
+                            <h4 class="text-xs font-bold text-terracotta-800 uppercase tracking-wide">Proportional Scaling (2 Decimal Precision)</h4>
+                            <p class="text-xs text-stone-600 mt-0.5">Enter scaled weights in decimals (&gt; 0). Click any thumbnail icon and press Cmd+V / Ctrl+V to paste a custom image from clipboard.</p>
                         </div>
                         <button onclick="addIngredientRow()" class="text-xs bg-terracotta-500 text-white font-semibold px-3 py-2 rounded-lg active:bg-terracotta-600 transition shadow-sm shrink-0">+ Add Ingredient</button>
                     </div>
@@ -228,7 +228,7 @@
         </div>
     </div>
 
-    <!-- Script Logic with Clipboard Image Pasting -->
+    <!-- Script Logic with Decimal Precision & "count" Unit -->
     <script>
         let recipes = [
             {
@@ -243,12 +243,12 @@
                         id: 'v-base',
                         name: 'Base Version',
                         ingredients: [
-                            { name: 'Kadugu (Mustard Seeds)', baseWeight: 0.1, unit: 'kg', customIcon: null },
-                            { name: 'Dry Red Chilli', baseWeight: 0.5, unit: 'kg', customIcon: null },
-                            { name: 'Urad Dal', baseWeight: 6.0, unit: 'kg', customIcon: null },
-                            { name: 'Gram Dal (Chana Dal)', baseWeight: 2.0, unit: 'kg', customIcon: null },
-                            { name: 'Asafoetida Cubes', baseWeight: 100, unit: 'g', customIcon: null },
-                            { name: 'Oil (Sesame/Gingelly)', baseWeight: 2.0, unit: 'L', customIcon: null }
+                            { name: 'Kadugu (Mustard Seeds)', baseWeight: 0.10, unit: 'kg', customIcon: null },
+                            { name: 'Dry Red Chilli', baseWeight: 0.50, unit: 'kg', customIcon: null },
+                            { name: 'Urad Dal', baseWeight: 6.00, unit: 'kg', customIcon: null },
+                            { name: 'Gram Dal (Chana Dal)', baseWeight: 2.00, unit: 'kg', customIcon: null },
+                            { name: 'Asafoetida Cubes', baseWeight: 100.00, unit: 'g', customIcon: null },
+                            { name: 'Oil (Sesame/Gingelly)', baseWeight: 2.00, unit: 'L', customIcon: null }
                         ],
                         preprep: [
                             { mode: 'Sun Drying', desc: 'Sundry dry red chillies for 2-3 hours to ensure crisp grinding texture.' },
@@ -389,12 +389,11 @@
             const baseFirst = v.ingredients[0] ? v.ingredients[0].baseWeight : 1;
 
             v.ingredients.forEach((ing, index) => {
-                const ratio = (baseFirst > 0) ? (ing.baseWeight / baseFirst).toFixed(3) : '1.000';
+                const ratio = (baseFirst > 0) ? (ing.baseWeight / baseFirst).toFixed(2) : '1.00';
                 
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-stone-50/50 transition';
                 
-                // Icon HTML container
                 let iconContent = '';
                 if (ing.customIcon) {
                     iconContent = `<img src="${ing.customIcon}" class="w-full h-full object-cover rounded-lg" alt="icon">`;
@@ -415,7 +414,7 @@
                     </td>
                     <td class="py-3 px-3 text-stone-500 font-mono text-[11px]">${ratio}</td>
                     <td class="py-3 px-3">
-                        <input type="number" step="any" value="${ing.baseWeight}" onchange="updateIngredientWeight(${index}, this.value)" class="w-24 bg-white border border-stone-300 rounded-lg px-2 py-1 focus:ring-2 focus:ring-terracotta-500 focus:outline-none font-semibold text-stone-900">
+                        <input type="number" step="0.01" min="0.01" value="${Number(ing.baseWeight).toFixed(2)}" onchange="updateIngredientWeight(${index}, this.value)" class="w-28 bg-white border border-stone-300 rounded-lg px-2 py-1 focus:ring-2 focus:ring-terracotta-500 focus:outline-none font-semibold text-stone-900">
                     </td>
                     <td class="py-3 px-3">
                         <select onchange="updateIngredientUnit(${index}, this.value)" class="bg-white border border-stone-300 rounded-lg px-2 py-1 text-xs text-stone-700 focus:outline-none">
@@ -426,7 +425,7 @@
                             <option value="tsp" ${ing.unit === 'tsp' ? 'selected' : ''}>tsp</option>
                             <option value="tbsp" ${ing.unit === 'tbsp' ? 'selected' : ''}>tbsp</option>
                             <option value="cups" ${ing.unit === 'cups' ? 'selected' : ''}>cups</option>
-                            <option value="nos" ${ing.unit === 'nos' ? 'selected' : ''}>nos</option>
+                            <option value="count" ${ing.unit === 'count' ? 'selected' : ''}>count</option>
                         </select>
                     </td>
                     <td class="py-3 px-3 text-right space-x-1">
@@ -438,7 +437,6 @@
             });
         }
 
-        // Handle direct clipboard image pasting onto the icon thumbnail
         function handleImagePaste(e, index) {
             const items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let i = 0; i < items.length; i++) {
@@ -462,8 +460,12 @@
         function updateIngredientWeight(changedIndex, newVal) {
             const v = getActiveVersion();
             const val = parseFloat(newVal);
-            if (isNaN(val) || val < 0) return;
-            v.ingredients[changedIndex].baseWeight = val;
+            if (isNaN(val) || val <= 0) {
+                alert('Weight must be greater than 0.');
+                renderIngredientsTable();
+                return;
+            }
+            v.ingredients[changedIndex].baseWeight = parseFloat(val.toFixed(2));
             renderIngredientsTable();
         }
 
@@ -476,7 +478,7 @@
         function updateIngredientUnit(index, unit) { getActiveVersion().ingredients[index].unit = unit; }
         
         function addIngredientRow() {
-            getActiveVersion().ingredients.push({ name: 'New Component', baseWeight: 1.0, unit: 'g', customIcon: null });
+            getActiveVersion().ingredients.push({ name: 'New Component', baseWeight: 1.00, unit: 'g', customIcon: null });
             renderIngredientsTable();
         }
 
@@ -599,35 +601,35 @@
                                 let namePart = parts.slice(1).join(' ').trim();
 
                                 let numMatch = qtyPart.match(/[\d\.]+/);
-                                let baseVal = numMatch ? parseFloat(numMatch[0]) : 1.0;
+                                let baseVal = numMatch ? parseFloat(numMatch[0]) : 1.00;
                                 let unitStr = 'g';
                                 let lowerQty = qtyPart.toLowerCase();
 
                                 if (lowerQty.includes('cup')) unitStr = 'cups';
                                 else if (lowerQty.includes('tbsp')) unitStr = 'tbsp';
-                                else if (lowerQty.includes('nos') || lowerQty.includes('pieces')) unitStr = 'nos';
+                                else if (lowerQty.includes('nos') || lowerQty.includes('pieces')) unitStr = 'count';
                                 else if (lowerQty.includes('kg')) unitStr = 'kg';
                                 else if (lowerQty.includes('l')) unitStr = 'L';
 
                                 v.ingredients.push({
                                     name: namePart || qtyPart,
-                                    baseWeight: isNaN(baseVal) ? 1.0 : baseVal,
+                                    baseWeight: isNaN(baseVal) ? 1.00 : parseFloat(baseVal.toFixed(2)),
                                     unit: unitStr,
                                     customIcon: null
                                 });
                                 parsedCount++;
                             } else {
-                                v.ingredients.push({ name: trimmed, baseWeight: 1.0, unit: 'nos', customIcon: null });
+                                v.ingredients.push({ name: trimmed, baseWeight: 1.00, unit: 'count', customIcon: null });
                                 parsedCount++;
                             }
                         } else {
-                            v.ingredients.push({ name: trimmed, baseWeight: 1.0, unit: 'nos', customIcon: null });
+                            v.ingredients.push({ name: trimmed, baseWeight: 1.00, unit: 'count', customIcon: null });
                             parsedCount++;
                         }
                     });
 
                     if (v.ingredients.length === 0) {
-                        v.ingredients.push({ name: rawText, baseWeight: 1.0, unit: 'unit', customIcon: null });
+                        v.ingredients.push({ name: rawText, baseWeight: 1.00, unit: 'g', customIcon: null });
                     }
 
                     progressBar.style.width = '100%';
@@ -662,7 +664,7 @@
                     {
                         id: 'v-base-' + Date.now(),
                         name: `v1_${dateStr}`,
-                        ingredients: [{ name: 'Kadugu (Mustard Seeds)', baseWeight: 1.0, unit: 'g', customIcon: null }],
+                        ingredients: [{ name: 'Kadugu (Mustard Seeds)', baseWeight: 1.00, unit: 'g', customIcon: null }],
                         preprep: [],
                         steps: []
                     }
@@ -700,7 +702,7 @@
 
         function openInstallModal() {
             const modal = document.getElementById('install-modal');
-            if (modal) modal.classList.remove('hidden');
+            if (modal) modal.classList.add('hidden');
         }
 
         function closeInstallModal() {
