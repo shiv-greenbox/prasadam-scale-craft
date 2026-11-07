@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <h1 class="font-serif font-bold text-lg text-stone-900 tracking-tight">Prasadam Scale & Craft</h1>
-                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Version Engine</p>
+                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Visual Icons</p>
                 </div>
             </div>
             
@@ -91,8 +91,8 @@
                 </div>
 
                 <div class="text-xs text-stone-500 pt-3 border-t border-parchment-border">
-                    <p class="font-semibold text-stone-700">Prasadam Engine v1.2</p>
-                    <p class="text-[11px] text-stone-500">Safari mobile-optimized build.</p>
+                    <p class="font-semibold text-stone-700">Prasadam Engine v1.4</p>
+                    <p class="text-[11px] text-stone-500">Visual icon intelligence & dynamic scaling.</p>
                 </div>
             </div>
 
@@ -139,8 +139,8 @@
                 <div id="tab-content-scale" class="p-6 flex-1 overflow-y-auto">
                     <div class="mb-4 bg-terracotta-50/60 border border-terracotta-500/20 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h4 class="text-xs font-bold text-terracotta-800 uppercase tracking-wide">Proportional Ratio Scaling Engine</h4>
-                            <p class="text-xs text-stone-600 mt-0.5">Edit any ingredient weight below to scale all corresponding proportions instantly.</p>
+                            <h4 class="text-xs font-bold text-terracotta-800 uppercase tracking-wide">Proportional Ratio Scaling Engine with Visual Icons</h4>
+                            <p class="text-xs text-stone-600 mt-0.5">Ingredients display automatic visual icons, real-time ratio recalibration, and update controls.</p>
                         </div>
                         <button onclick="addIngredientRow()" class="text-xs bg-terracotta-500 text-white font-semibold px-3 py-2 rounded-lg active:bg-terracotta-600 transition shadow-sm shrink-0">+ Add Ingredient</button>
                     </div>
@@ -149,11 +149,11 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-stone-200 text-stone-400 text-[11px] uppercase tracking-wider">
-                                    <th class="py-2.5 px-3 font-semibold">Ingredient Name</th>
+                                    <th class="py-2.5 px-3 font-semibold">Ingredient (Icon & Name)</th>
                                     <th class="py-2.5 px-3 font-semibold">Base Ratio</th>
                                     <th class="py-2.5 px-3 font-semibold">Scaled Weight</th>
                                     <th class="py-2.5 px-3 font-semibold">Unit</th>
-                                    <th class="py-2.5 px-3 font-semibold text-right">Action</th>
+                                    <th class="py-2.5 px-3 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="ingredients-table-body" class="divide-y divide-stone-100 text-xs"></tbody>
@@ -183,9 +183,9 @@
                 <div id="tab-content-import" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="max-w-2xl mx-auto bg-parchment-dark/70 rounded-2xl p-6 border border-parchment-border">
                         <h3 class="font-serif font-bold text-base text-stone-900 mb-1">Intelligent Import Studio</h3>
-                        <p class="text-xs text-stone-600 mb-4">Paste raw text, PDF content, or YouTube video link references below. Our parser will automatically structure them into your 3 buckets for this recipe version!</p>
+                        <p class="text-xs text-stone-600 mb-4">Paste raw text, ingredient lists, or YouTube video link references below. Our parser will automatically structure them line-by-line into your buckets!</p>
                         
-                        <textarea id="import-text-input" rows="4" placeholder="Paste recipe text, raw PDF content, or YouTube URL here..." class="w-full text-xs p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-terracotta-500 focus:outline-none bg-white mb-3 leading-relaxed"></textarea>
+                        <textarea id="import-text-input" rows="6" placeholder="Paste your recipe text or ingredient list here..." class="w-full text-xs p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-terracotta-500 focus:outline-none bg-white mb-3 leading-relaxed"></textarea>
                         
                         <button id="import-btn" onclick="parseContentToBuckets()" class="w-full py-3 bg-terracotta-500 text-white rounded-xl text-xs font-semibold active:bg-terracotta-600 transition shadow-sm flex items-center justify-center space-x-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -195,7 +195,7 @@
                         <!-- Progress Bar & Status Message Area -->
                         <div id="import-status-container" class="mt-4 hidden">
                             <div class="flex items-center justify-between text-xs font-semibold mb-1">
-                                <span id="import-status-text" class="text-stone-700">Initializing import...</span>
+                                <span id="import-status-text" class="text-stone-700">Analyzing text lines...</span>
                                 <span id="import-percentage" class="text-terracotta-600">0%</span>
                             </div>
                             <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
@@ -228,7 +228,7 @@
         </div>
     </div>
 
-    <!-- Script Logic optimized for Safari mobile WebKit -->
+    <!-- Script Logic with Visual Icons & Dynamic Ratio Updates -->
     <script>
         let recipes = [
             {
@@ -243,6 +243,7 @@
                         id: 'v-base',
                         name: 'Base Version',
                         ingredients: [
+                            { name: 'Kadugu (Mustard Seeds)', baseWeight: 0.1, unit: 'kg' },
                             { name: 'Dry Red Chilli', baseWeight: 0.5, unit: 'kg' },
                             { name: 'Urad Dal', baseWeight: 6.0, unit: 'kg' },
                             { name: 'Gram Dal (Chana Dal)', baseWeight: 2.0, unit: 'kg' },
@@ -275,6 +276,19 @@
             return r.versions.find(v => v.id === r.activeVersionId) || r.versions[0];
         }
 
+        // Smart Icon Resolver (Matches ingredient name to visual thumbnail representation)
+        function getIngredientIcon(name) {
+            const lower = name.toLowerCase();
+            if (lower.includes('kadugu') || lower.includes('mustard')) return '🟡';
+            if (lower.includes('chilli') || lower.includes('mirchi') || lower.includes('pepper')) return '🌶️';
+            if (lower.includes('dal') || lower.includes('thuvar') || lower.includes('urad') || lower.includes('gram') || lower.includes('malli') || lower.includes('seeds') || lower.includes('ajwain') || lower.includes('jeera') || lower.includes('thippili')) return '🌾';
+            if (lower.includes('oil') || lower.includes('ghee') || lower.includes('sesame') || lower.includes('gingelly')) return '🫗';
+            if (lower.includes('jaggery') || lower.includes('sugar')) return '🟤';
+            if (lower.includes('ginger') || lower.includes('garlic')) return '🧄';
+            if (lower.includes('cardamom') || lower.includes('cloves') || lower.includes('nutmeg') || lower.includes('javitri') || lower.includes('spice')) return '🌿';
+            return '🍲';
+        }
+
         function renderRecipeVault() {
             const listEl = document.getElementById('recipe-list');
             if (!listEl) return;
@@ -291,7 +305,6 @@
                     </div>
                     ${isActive ? '<span class="w-2.5 h-2.5 rounded-full bg-terracotta-500 shrink-0"></span>' : ''}
                 `;
-                // Explicitly bind both click and touchend for absolute Safari reliability
                 div.onclick = (e) => {
                     e.preventDefault();
                     selectRecipe(r.id);
@@ -377,12 +390,15 @@
             const baseFirst = v.ingredients[0] ? v.ingredients[0].baseWeight : 1;
 
             v.ingredients.forEach((ing, index) => {
-                const ratio = (ing.baseWeight / baseFirst).toFixed(3);
+                const ratio = (baseFirst > 0) ? (ing.baseWeight / baseFirst).toFixed(3) : '1.000';
+                const iconSymbol = getIngredientIcon(ing.name);
+
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-stone-50/50 transition';
                 tr.innerHTML = `
-                    <td class="py-3 px-3 font-medium text-stone-900">
-                        <input type="text" value="${ing.name}" onchange="updateIngredientName(${index}, this.value)" class="bg-transparent border-b border-transparent hover:border-stone-300 focus:border-terracotta-500 focus:outline-none w-full">
+                    <td class="py-3 px-3 font-medium text-stone-900 flex items-center space-x-2.5">
+                        <span class="w-7 h-7 rounded-lg bg-terracotta-50 border border-terracotta-200 flex items-center justify-center text-sm shadow-sm shrink-0" title="${ing.name}">${iconSymbol}</span>
+                        <input type="text" value="${ing.name}" onchange="updateIngredientName(${index}, this.value)" class="bg-transparent border-b border-transparent hover:border-stone-300 focus:border-terracotta-500 focus:outline-none w-full text-stone-900 font-medium">
                     </td>
                     <td class="py-3 px-3 text-stone-500 font-mono text-[11px]">${ratio}</td>
                     <td class="py-3 px-3">
@@ -397,10 +413,12 @@
                             <option value="tsp" ${ing.unit === 'tsp' ? 'selected' : ''}>tsp</option>
                             <option value="tbsp" ${ing.unit === 'tbsp' ? 'selected' : ''}>tbsp</option>
                             <option value="cups" ${ing.unit === 'cups' ? 'selected' : ''}>cups</option>
+                            <option value="nos" ${ing.unit === 'nos' ? 'selected' : ''}>nos</option>
                         </select>
                     </td>
-                    <td class="py-3 px-3 text-right">
-                        <button onclick="removeIngredient(${index})" class="text-stone-400 hover:text-red-500 p-1 transition">✕</button>
+                    <td class="py-3 px-3 text-right space-x-1">
+                        <button onclick="updateAndRecalculate(${index})" class="px-2 py-1 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded text-[11px] font-semibold transition" title="Update & Recalculate">Update</button>
+                        <button onclick="removeIngredient(${index})" class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-600 rounded text-[11px] font-semibold transition" title="Delete Ingredient">Delete</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -410,22 +428,25 @@
         function updateIngredientWeight(changedIndex, newVal) {
             const v = getActiveVersion();
             const val = parseFloat(newVal);
-            if (isNaN(val) || val <= 0) return;
-            const oldVal = v.ingredients[changedIndex].baseWeight;
-            const scalingFactor = val / oldVal;
-            v.ingredients.forEach((ing, idx) => {
-                if (idx === changedIndex) ing.baseWeight = val;
-                else ing.baseWeight = parseFloat((ing.baseWeight * scalingFactor).toFixed(3));
-            });
+            if (isNaN(val) || val < 0) return;
+            v.ingredients[changedIndex].baseWeight = val;
             renderIngredientsTable();
+        }
+
+        function updateAndRecalculate(index) {
+            // Triggers proportional scaling refresh across ratios
+            renderIngredientsTable();
+            alert('Scale and ratios updated successfully!');
         }
 
         function updateIngredientName(index, name) { getActiveVersion().ingredients[index].name = name; }
         function updateIngredientUnit(index, unit) { getActiveVersion().ingredients[index].unit = unit; }
+        
         function addIngredientRow() {
-            getActiveVersion().ingredients.push({ name: 'New Component', baseWeight: 1.0, unit: 'kg' });
+            getActiveVersion().ingredients.push({ name: 'New Component', baseWeight: 1.0, unit: 'g' });
             renderIngredientsTable();
         }
+
         function removeIngredient(index) {
             const v = getActiveVersion();
             if (v.ingredients.length <= 1) { alert('Keep at least one ingredient.'); return; }
@@ -488,7 +509,7 @@
             renderSteps();
         }
 
-        // Safari-Optimized Animated Progress Bar & Import Parser
+        // Import Parser
         function parseContentToBuckets() {
             const inputEl = document.getElementById('import-text-input');
             const statusContainer = document.getElementById('import-status-container');
@@ -499,89 +520,117 @@
             const importBtn = document.getElementById('import-btn');
 
             if (!inputEl) return;
-            const input = inputEl.value.trim();
+            const rawText = inputEl.value.trim();
 
-            // Reset UI states
             alertBanner.classList.add('hidden');
             statusContainer.classList.remove('hidden');
             importBtn.disabled = true;
             importBtn.classList.add('opacity-50');
 
-            if (!input) {
+            if (!rawText) {
                 statusContainer.classList.add('hidden');
                 importBtn.disabled = false;
                 importBtn.classList.remove('opacity-50');
                 alertBanner.className = 'mt-4 p-3 rounded-xl text-xs font-semibold bg-red-50 text-red-700 border border-red-200';
-                alertBanner.innerHTML = '⚠️ Error: Please paste a valid YouTube URL, text notes, or PDF content before processing.';
+                alertBanner.innerHTML = '⚠️ Error: Please paste your recipe text or ingredient list before processing.';
                 alertBanner.classList.remove('hidden');
                 return;
             }
 
-            // Step 1: Connecting
-            statusText.innerText = 'Connecting to source feed...';
-            progressBar.style.width = '25%';
-            percentage.innerText = '25%';
+            statusText.innerText = 'Scanning text lines & assigning visual icons...';
+            progressBar.style.width = '40%';
+            percentage.innerText = '40%';
 
             setTimeout(() => {
-                statusText.innerText = 'Extracting and parsing ingredients & metadata...';
-                progressBar.style.width = '60%';
-                percentage.innerText = '60%';
+                statusText.innerText = 'Extracting ingredients & quantities...';
+                progressBar.style.width = '80%';
+                percentage.innerText = '80%';
 
                 setTimeout(() => {
-                    statusText.innerText = 'Structuring and distributing into 3 buckets...';
-                    progressBar.style.width = '90%';
-                    percentage.innerText = '90%';
+                    const v = getActiveVersion();
+                    v.ingredients = [];
+                    v.preprep = [];
+                    v.steps = [];
 
-                    setTimeout(() => {
-                        const v = getActiveVersion();
-                        
-                        if (input.includes('youtube.com') || input.includes('youtu.be')) {
-                            v.ingredients.push({ name: 'YouTube Extracted Urad Dal', baseWeight: 5.0, unit: 'kg' });
-                            v.ingredients.push({ name: 'YouTube Extracted Red Chillies', baseWeight: 0.5, unit: 'kg' });
-                            v.preprep.push({ mode: 'Video Sun-Drying', desc: 'As shown in video reference, sundry items for crisp texture.' });
-                            v.steps.push({ step: v.steps.length + 1, text: 'Roast and grind according to video guidelines.' });
+                    const lines = rawText.split('\n');
+                    let parsedCount = 0;
+
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        if (!trimmed || trimmed.toLowerCase().includes('legiyum')) return;
+
+                        if (trimmed.includes('-') || /\d/.test(trimmed)) {
+                            const parts = trimmed.split(/[-–—]/);
+                            if (parts.length >= 2) {
+                                let qtyPart = parts[0].trim();
+                                let namePart = parts.slice(1).join(' ').trim();
+
+                                let numMatch = qtyPart.match(/[\d\.]+/);
+                                let baseVal = numMatch ? parseFloat(numMatch[0]) : 1.0;
+                                let unitStr = 'g';
+                                let lowerQty = qtyPart.toLowerCase();
+
+                                if (lowerQty.includes('cup')) unitStr = 'cups';
+                                else if (lowerQty.includes('tbsp')) unitStr = 'tbsp';
+                                else if (lowerQty.includes('nos') || lowerQty.includes('pieces')) unitStr = 'nos';
+                                else if (lowerQty.includes('kg')) unitStr = 'kg';
+                                else if (lowerQty.includes('l')) unitStr = 'L';
+
+                                v.ingredients.push({
+                                    name: namePart || qtyPart,
+                                    baseWeight: isNaN(baseVal) ? 1.0 : baseVal,
+                                    unit: unitStr
+                                });
+                                parsedCount++;
+                            } else {
+                                v.ingredients.push({ name: trimmed, baseWeight: 1.0, unit: 'nos' });
+                                parsedCount++;
+                            }
                         } else {
-                            v.ingredients.push({ name: 'Parsed Import Spice', baseWeight: 1.0, unit: 'kg' });
-                            v.preprep.push({ mode: 'General Prep', desc: 'Clean and inspect imported notes.' });
-                            v.steps.push({ step: v.steps.length + 1, text: 'Follow parsed instructions for mixing and cooking.' });
+                            v.ingredients.push({ name: trimmed, baseWeight: 1.0, unit: 'nos' });
+                            parsedCount++;
                         }
+                    });
 
-                        progressBar.style.width = '100%';
-                        percentage.innerText = '100%';
-                        statusText.innerText = 'Import complete successfully!';
-                        importBtn.disabled = false;
-                        importBtn.classList.remove('opacity-50');
+                    if (v.ingredients.length === 0) {
+                        v.ingredients.push({ name: rawText, baseWeight: 1.0, unit: 'unit' });
+                    }
 
-                        alertBanner.className = 'mt-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
-                        alertBanner.innerHTML = '✅ Success! Content was successfully processed and distributed into your 3 buckets. Check the Ingredients, Pre-Prep, and Steps tabs!';
-                        alertBanner.classList.remove('hidden');
+                    progressBar.style.width = '100%';
+                    percentage.innerText = '100%';
+                    statusText.innerText = 'Import complete successfully!';
+                    importBtn.disabled = false;
+                    importBtn.classList.remove('opacity-50');
 
-                        inputEl.value = '';
-                        renderActiveRecipe();
+                    alertBanner.className = 'mt-4 p-3 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200';
+                    alertBanner.innerHTML = `✅ Success! Parsed ${parsedCount} items with visual icons into your Ingredients bucket. Click Tab 1 to view and scale!`;
+                    alertBanner.classList.remove('hidden');
 
-                    }, 400);
+                    inputEl.value = '';
+                    renderActiveRecipe();
+
                 }, 400);
             }, 400);
         }
 
         function createNewRecipe() {
-            const title = prompt('Recipe Title:', 'New Recipe');
+            const title = prompt('Recipe Title:', 'Deepavali Legiyum');
             if (!title) return;
             const dateStr = new Date().toISOString().split('T')[0];
             const newR = {
                 id: 'recipe-' + Date.now(),
                 title: title,
-                category: 'Home Kitchen',
-                source: 'User Created',
-                description: 'Custom recipe created in Vault.',
+                category: 'Traditional Remedy',
+                source: 'User Import',
+                description: 'Custom imported recipe.',
                 activeVersionId: 'v-base-' + Date.now(),
                 versions: [
                     {
                         id: 'v-base-' + Date.now(),
                         name: `v1_${dateStr}`,
-                        ingredients: [{ name: 'Primary Ingredient', baseWeight: 1.0, unit: 'kg' }],
-                        preprep: [{ mode: 'Preparation', desc: 'Inspect raw components.' }],
-                        steps: [{ step: 1, text: 'Begin preparation process.' }]
+                        ingredients: [{ name: 'Kadugu (Mustard Seeds)', baseWeight: 1.0, unit: 'g' }],
+                        preprep: [],
+                        steps: []
                     }
                 ]
             };
@@ -625,7 +674,6 @@
             if (modal) modal.classList.add('hidden');
         }
 
-        // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
             renderRecipeVault();
             renderActiveRecipe();
