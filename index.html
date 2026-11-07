@@ -60,7 +60,7 @@
                 </div>
                 <div>
                     <h1 class="font-serif font-bold text-lg text-stone-900 tracking-tight">Prasadam Scale & Craft</h1>
-                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Decimal Precision</p>
+                    <p class="text-xs text-stone-500 font-medium">Divine Recipe Studio & Clean Reset Engine</p>
                 </div>
             </div>
             
@@ -91,8 +91,8 @@
                 </div>
 
                 <div class="text-xs text-stone-500 pt-3 border-t border-parchment-border">
-                    <p class="font-semibold text-stone-700">Prasadam Engine v1.6</p>
-                    <p class="text-[11px] text-stone-500">Decimal precision & "count" unit update.</p>
+                    <p class="font-semibold text-stone-700">Prasadam Engine v1.8</p>
+                    <p class="text-[11px] text-stone-500">Clean reset & import history selection.</p>
                 </div>
             </div>
 
@@ -182,8 +182,16 @@
                 <!-- Tab 4: Import Content / URL Studio -->
                 <div id="tab-content-import" class="p-6 flex-1 overflow-y-auto hidden">
                     <div class="max-w-2xl mx-auto bg-parchment-dark/70 rounded-2xl p-6 border border-parchment-border">
-                        <h3 class="font-serif font-bold text-base text-stone-900 mb-1">Intelligent Import Studio</h3>
-                        <p class="text-xs text-stone-600 mb-4">Paste raw text, ingredient lists, or YouTube video link references below. Our parser will automatically structure them line-by-line into your buckets!</p>
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-serif font-bold text-base text-stone-900">Intelligent Import Studio</h3>
+                            <!-- Import History Dropdown Selector -->
+                            <div class="relative">
+                                <select id="import-history-select" onchange="loadImportHistory(this.value)" class="text-[11px] font-semibold bg-white border border-stone-300 rounded-lg px-2 py-1 text-stone-700 focus:outline-none">
+                                    <option value="">📜 Select Past Import History...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="text-xs text-stone-600 mb-4">Paste raw text, ingredient lists, or YouTube video link references below. Previous pastes are saved in history above!</p>
                         
                         <textarea id="import-text-input" rows="6" placeholder="Paste your recipe text or ingredient list here..." class="w-full text-xs p-3 rounded-xl border border-stone-300 focus:ring-2 focus:ring-terracotta-500 focus:outline-none bg-white mb-3 leading-relaxed"></textarea>
                         
@@ -228,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Script Logic with Decimal Precision & "count" Unit -->
+    <!-- Script Logic with Clean Reset & Import History -->
     <script>
         let recipes = [
             {
@@ -243,7 +251,6 @@
                         id: 'v-base',
                         name: 'Base Version',
                         ingredients: [
-                            { name: 'Kadugu (Mustard Seeds)', baseWeight: 0.10, unit: 'kg', customIcon: null },
                             { name: 'Dry Red Chilli', baseWeight: 0.50, unit: 'kg', customIcon: null },
                             { name: 'Urad Dal', baseWeight: 6.00, unit: 'kg', customIcon: null },
                             { name: 'Gram Dal (Chana Dal)', baseWeight: 2.00, unit: 'kg', customIcon: null },
@@ -266,6 +273,7 @@
         ];
 
         let activeRecipeId = 'dosai-podi';
+        let importHistory = []; // Stores past import text strings
 
         function getActiveRecipe() {
             return recipes.find(r => r.id === activeRecipeId) || recipes[0];
@@ -544,7 +552,7 @@
             renderSteps();
         }
 
-        // Import Parser
+        // Import Parser & History Management
         function parseContentToBuckets() {
             const inputEl = document.getElementById('import-text-input');
             const statusContainer = document.getElementById('import-status-container');
@@ -570,6 +578,12 @@
                 alertBanner.innerHTML = '⚠️ Error: Please paste your recipe text or ingredient list before processing.';
                 alertBanner.classList.remove('hidden');
                 return;
+            }
+
+            // Save to history if unique
+            if (!importHistory.includes(rawText)) {
+                importHistory.push(rawText);
+                updateImportHistoryDropdown();
             }
 
             statusText.innerText = 'Scanning text lines & assigning visual icons...';
@@ -649,22 +663,41 @@
             }, 400);
         }
 
+        function updateImportHistoryDropdown() {
+            const select = document.getElementById('import-history-select');
+            if (!select) return;
+            select.innerHTML = '<option value="">📜 Select Past Import History...</option>';
+            importHistory.forEach((text, idx) => {
+                const opt = document.createElement('option');
+                opt.value = text;
+                // Truncate preview text
+                opt.innerText = `Import #${idx + 1}: ${text.substring(0, 30)}...`;
+                select.appendChild(opt);
+            });
+        }
+
+        function loadImportHistory(selectedText) {
+            if (!selectedText) return;
+            const inputEl = document.getElementById('import-text-input');
+            if (inputEl) inputEl.value = selectedText;
+        }
+
         function createNewRecipe() {
-            const title = prompt('Recipe Title:', 'Deepavali Legiyum');
+            const title = prompt('Recipe Title:', 'New Recipe');
             if (!title) return;
             const dateStr = new Date().toISOString().split('T')[0];
             const newR = {
                 id: 'recipe-' + Date.now(),
                 title: title,
-                category: 'Traditional Remedy',
+                category: 'Home Kitchen',
                 source: 'User Import',
-                description: 'Custom imported recipe.',
+                description: 'Custom created recipe.',
                 activeVersionId: 'v-base-' + Date.now(),
                 versions: [
                     {
                         id: 'v-base-' + Date.now(),
                         name: `v1_${dateStr}`,
-                        ingredients: [{ name: 'Kadugu (Mustard Seeds)', baseWeight: 1.00, unit: 'g', customIcon: null }],
+                        ingredients: [{ name: 'Primary Ingredient', baseWeight: 1.00, unit: 'g', customIcon: null }],
                         preprep: [],
                         steps: []
                     }
@@ -672,6 +705,14 @@
             };
             recipes.push(newR);
             selectRecipe(newR.id);
+
+            // CLEAN RESET: Ensure import text area and status bars are completely reset when a new recipe is created
+            const inputEl = document.getElementById('import-text-input');
+            if (inputEl) inputEl.value = '';
+            const statusContainer = document.getElementById('import-status-container');
+            if (statusContainer) statusContainer.classList.add('hidden');
+            const alertBanner = document.getElementById('import-alert-banner');
+            if (alertBanner) alertBanner.classList.add('hidden');
         }
 
         function switchTab(tabName) {
@@ -702,7 +743,7 @@
 
         function openInstallModal() {
             const modal = document.getElementById('install-modal');
-            if (modal) modal.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeInstallModal() {
